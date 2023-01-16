@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
+import java.time.LocalDate;
 
 @Entity(name = "tasks")
 @Data
@@ -37,14 +38,14 @@ public class Tasks {
     public Tasks(String title, String description, Date dueDate, boolean isFinished) {
         this.title = title;
         this.description = description;
-        this.dueDate = dueDate;
+        this.dueDate = Date.valueOf(dueDate);
         this.isFinished = isFinished;
     }
 
     public static void updateTasks(int task_Id, String title, String description, Timestamp dueDate) {
         session.beginTransaction();
         Transaction trans = session.getTransaction();
-        Tasks tasks = session.get(Tasks.class, task_Id);
+        Tasks tasks = session.get(Tasks.class, title);
         try {
             session.merge(tasks);
             session.flush();
@@ -56,10 +57,10 @@ public class Tasks {
 
     }
 
-    public static void deleteTasks(int task_Id) {
+    public static void deleteTasks(String title) {
         session.beginTransaction();
         Transaction trans = session.getTransaction();
-        Tasks tasks = session.get(Tasks.class, task_Id);
+        Tasks tasks = session.get(Tasks.class, title);
         try {
             session.delete(tasks);
             session.flush();
