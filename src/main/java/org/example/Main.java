@@ -14,5 +14,7 @@ public class Main {
         //Tasks tasks = session.find(Tasks.class, 1);
         //System.out.println(tasks);
         Tasks tasks = new Tasks("suva","savi","2022-12-10",true);
-    }
+
+
+}
 }
