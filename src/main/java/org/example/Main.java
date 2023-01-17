@@ -1,7 +1,6 @@
 package org.example;
 
 import db.Database;
-import entities.Tasks;
 import org.hibernate.Session;
 
 public class Main {
@@ -13,7 +12,7 @@ public class Main {
         //Tasks.deleteTasks(1);
         //Tasks tasks = session.find(Tasks.class, 1);
         //System.out.println(tasks);
-        Tasks tasks = new Tasks("suva","savi","2022-12-10",true);
+        //Tasks tasks = new Tasks("test","test2","2022-12-10",true);
 
 
 }

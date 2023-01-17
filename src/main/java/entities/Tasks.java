@@ -8,6 +8,7 @@ import org.hibernate.Transaction;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Scanner;
 
@@ -42,10 +43,32 @@ public class Tasks {
         this.isFinished = isFinished;
     }
 
-    public static void updateTasks(int id, String title, String description, String dueDate, boolean isFinished) {
+    public static void updateTasks() {
         session.beginTransaction();
         Transaction trans = session.getTransaction();
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the task id you want do update: ");
+        int id = scanner.nextInt();
+
+        System.out.println("Enter the title: ");
+        String title = scanner.next();
+
+        System.out.println("Enter the description: ");
+        String description = scanner.next();
+
+        System.out.println("Enter the due date: ");
+        String dueDate = scanner.next();
+
+        System.out.println("Is the task finished?");
+        boolean isFinished = scanner.hasNext();
+
         Tasks tasks = session.get(Tasks.class, id); // correction by title
+        tasks.setTitle(title);
+        tasks.setDescription(description);
+        tasks.setDueDate(Date.valueOf(dueDate));
+        tasks.setFinished(isFinished);
+
         try {
             session.merge(tasks);
             session.flush();
@@ -54,6 +77,8 @@ public class Tasks {
             trans.rollback();
             e.printStackTrace();
         }
+
+
     }
 
     public static void deleteTasks() {
@@ -104,16 +129,16 @@ public class Tasks {
         }
     }
 
-    public static void viewTasks(String title, String description, String dueDate, boolean isFinished) {
-        try {
-            session.beginTransaction();
-            List<Tasks> tasks = session.createQuery("from tasks where title").list();
+    public static void dueMethod() {
+        long currentTime = System.currentTimeMillis();
+        long plus47Hours = currentTime + (47 * 60 * 60 * 1000);
+        Timestamp plus47HoursTS = new Timestamp(plus47Hours);
 
-            for (Tasks task : tasks) {
-                System.out.println(task);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        long plus48Hours = currentTime + (48 * 60 * 60 * 1000);
+        Timestamp plus48HoursTS = new Timestamp(plus48Hours);
+
+        Query query = session.createQuery("from GroupNotes as gn where gn.zugwisenPersonId!=:val and gn.timeToend > :from and gn.timeToend < :to");
+        query.setParameter("from", plus47HoursTS);
+        query.setParameter("to", plus48HoursTS);
     }
 }
