@@ -8,7 +8,6 @@ import org.hibernate.Transaction;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Scanner;
 
@@ -48,6 +47,7 @@ public class Tasks {
         Transaction trans = session.getTransaction();
 
         Scanner scanner = new Scanner(System.in);
+
         System.out.println("Enter the task id you want do update: ");
         int id = scanner.nextInt();
 
@@ -61,9 +61,9 @@ public class Tasks {
         String dueDate = scanner.next();
 
         System.out.println("Is the task finished?");
-        boolean isFinished = scanner.hasNext();
+        boolean isFinished = scanner.nextBoolean(); // Fix
 
-        Tasks tasks = session.get(Tasks.class, id); // correction by title
+        Tasks tasks = session.get(Tasks.class, id);
         tasks.setTitle(title);
         tasks.setDescription(description);
         tasks.setDueDate(Date.valueOf(dueDate));
@@ -89,7 +89,7 @@ public class Tasks {
 
         session.beginTransaction();
         Transaction trans = session.getTransaction();
-        Tasks tasks = session.get(Tasks.class, id); // correction by title
+        Tasks tasks = session.get(Tasks.class, id);
         try {
             session.delete(tasks);
             session.flush();
@@ -116,11 +116,13 @@ public class Tasks {
         }
     }
 
-    public static void createTasks(Tasks tasks) {
+    public static void createTasks() {
         session.beginTransaction();
         Transaction trans = session.getTransaction();
+        Tasks task = testTask();
+
         try {
-            session.persist(tasks);
+            session.persist(task);
             session.flush();
             trans.commit();
         } catch (Exception e) {
@@ -129,16 +131,30 @@ public class Tasks {
         }
     }
 
-    public static void dueMethod() {
-        long currentTime = System.currentTimeMillis();
-        long plus47Hours = currentTime + (47 * 60 * 60 * 1000);
-        Timestamp plus47HoursTS = new Timestamp(plus47Hours);
+    public static Tasks testTask() {
+        Tasks task = new Tasks();
 
-        long plus48Hours = currentTime + (48 * 60 * 60 * 1000);
-        Timestamp plus48HoursTS = new Timestamp(plus48Hours);
+        Scanner scanner = new Scanner(System.in);
 
-        Query query = session.createQuery("from GroupNotes as gn where gn.zugwisenPersonId!=:val and gn.timeToend > :from and gn.timeToend < :to");
-        query.setParameter("from", plus47HoursTS);
-        query.setParameter("to", plus48HoursTS);
+        System.out.println("Enter the task title: ");
+        String title = scanner.nextLine();
+
+        System.out.println("Enter the task description: ");
+        String description = scanner.nextLine();
+
+        System.out.println("Enter due date: ");
+        String dueDate = scanner.next();
+
+        System.out.println("Is the task finished?");
+        boolean isFinished = scanner.nextBoolean(); // Fix
+
+        task.setTitle(title);
+        task.setDescription(description);
+        task.setDueDate(Date.valueOf(dueDate));
+        task.setFinished(isFinished);
+        return task;
+
     }
+
+
 }
