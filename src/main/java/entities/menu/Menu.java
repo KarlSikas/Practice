@@ -70,6 +70,15 @@ public class Menu {
             case 4:
                 Tasks.createTasks();
                 usersAccount();
+            case 5:
+                Tasks.listTasks();
+                Tasks.addDueDate();
+                usersAccount();
+                break;
+            default:
+                System.out.println("Invalid option!");
+                usersAccount();
+                break;
 
         }
     }
